@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <title>Love Language Path – Quiz</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Discover your primary love language with a 10-question quiz and see who you pair best with." />
+  <meta name="description" content="Discover your primary love language with a 10-question quiz, blended with Zodiac-style archetypes." />
   <style>
     :root {
       --bg: #050816;
@@ -207,6 +207,29 @@
       font-size: 0.77rem;
       color: var(--text-soft);
       margin-top: 4px;
+    }
+
+    .zodiac-row {
+      margin-top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .zodiac-row label {
+      font-size: 0.8rem;
+      color: var(--text-soft);
+    }
+
+    .zodiac-row select {
+      width: 100%;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--text-main);
+      padding: 7px 10px;
+      font-size: 0.85rem;
+      outline: none;
     }
 
     /* Progress + Quiz */
@@ -435,7 +458,10 @@
         Love Language Path · 10 Questions
       </div>
       <h1>How Do You Give & Receive Love?</h1>
-      <p>Not a diagnosis, just a mirror. Answer honestly and treat this as a gentle check-in, not a box to live inside.</p>
+      <p>
+        Not a diagnosis, just a mirror. This blends love languages with Zodiac-style
+        archetypes, for people who feel like “this is just how I was born.”
+      </p>
     </header>
 
     <main>
@@ -444,8 +470,8 @@
         <div class="card-inner">
           <h2 class="card-title">Start Your Love Language Path</h2>
           <p class="card-subtitle">
-            This short test blends personality-style questions with the 5 classic love languages
-            to show what you gravitate toward in real life, not just what sounds nice on paper.
+            Answer 10 questions to see your primary and secondary love languages, plus a
+            Zodiac-style flavor that describes your natural way of loving.
           </p>
 
           <div class="intro-grid">
@@ -455,18 +481,43 @@
             </div>
             <div class="intro-row">
               <span class="intro-dot"></span>
-              <span>You’ll get a primary and secondary love language.</span>
+              <span>Built around the 5 love languages + Zodiac-like archetypes.</span>
             </div>
             <div class="intro-row">
               <span class="intro-dot"></span>
-              <span>We’ll also show which partner styles tend to pair well with you.</span>
+              <span>We treat this as a mirror, not a rulebook.</span>
             </div>
           </div>
 
           <p class="tagline">
-            Take a breath. Answer like no one’s watching. This works best when you answer for how you
-            actually behave & feel, not how you think you “should” be.
+            Take a breath. Answer for how you actually feel and behave, not how you
+            “should” be. Think of it like reading a horoscope that accidentally nails you.
           </p>
+
+          <div class="zodiac-row">
+            <label for="zodiac-select">
+              Optional: choose your Sun sign so we can speak your language a bit more.
+            </label>
+            <select id="zodiac-select">
+              <option value="">Skip / I’m not sure</option>
+              <option value="Aries">Aries (♈︎)</option>
+              <option value="Taurus">Taurus (♉︎)</option>
+              <option value="Gemini">Gemini (♊︎)</option>
+              <option value="Cancer">Cancer (♋︎)</option>
+              <option value="Leo">Leo (♌︎)</option>
+              <option value="Virgo">Virgo (♍︎)</option>
+              <option value="Libra">Libra (♎︎)</option>
+              <option value="Scorpio">Scorpio (♏︎)</option>
+              <option value="Sagittarius">Sagittarius (♐︎)</option>
+              <option value="Capricorn">Capricorn (♑︎)</option>
+              <option value="Aquarius">Aquarius (♒︎)</option>
+              <option value="Pisces">Pisces (♓︎)</option>
+            </select>
+            <p class="helper-small">
+              We don’t calculate charts here — we just borrow the vibe:
+              Fire (action), Earth (practical), Air (mind), Water (emotional).
+            </p>
+          </div>
 
           <div class="btn-row">
             <button id="start-btn" type="button" class="btn-primary">
@@ -536,6 +587,11 @@
           </div>
 
           <div class="result-section">
+            <h3>Zodiac-Style Archetype</h3>
+            <p id="zodiac-archetype-text"></p>
+          </div>
+
+          <div class="result-section">
             <h3>Best Partner Matches For You</h3>
             <p id="match-description"></p>
           </div>
@@ -561,13 +617,70 @@
     </main>
 
     <footer>
-      Built with care, not just code. <span>Use this as a conversation starter, not a verdict.</span>
+      Built with care, not just code. <span>Use this like a horoscope: a story to reflect with, not a sentence to live under.</span>
     </footer>
   </div>
 
   <script>
     // Love language keys
     const LOVE_KEYS = ["words", "time", "service", "gifts", "touch"];
+
+    // Map signs to elements
+    const ZODIAC_ELEMENT = {
+      Aries: "Fire",
+      Leo: "Fire",
+      Sagittarius: "Fire",
+      Taurus: "Earth",
+      Virgo: "Earth",
+      Capricorn: "Earth",
+      Gemini: "Air",
+      Libra: "Air",
+      Aquarius: "Air",
+      Cancer: "Water",
+      Scorpio: "Water",
+      Pisces: "Water"
+    };
+
+    const ELEMENT_SIGNS = {
+      Fire: ["Aries", "Leo", "Sagittarius"],
+      Earth: ["Taurus", "Virgo", "Capricorn"],
+      Air: ["Gemini", "Libra", "Aquarius"],
+      Water: ["Cancer", "Scorpio", "Pisces"]
+    };
+
+    // For each love language, give it a Zodiac-like vibe lane
+    const LOVE_ARCHETYPE = {
+      words: {
+        element: "Air",
+        label: "The Communicator",
+        blurb:
+          "This pattern lines up with classic Air-sign themes: curious, verbal, and mentally wired into the people you love. You process love through language, meaning, and the stories you tell together."
+      },
+      time: {
+        element: "Water",
+        label: "The Deep Diver",
+        blurb:
+          "This pattern echoes Water-sign energy: emotionally tuned-in, present, and nourished by depth. You fall in love through shared time, safe presence, and feeling someone’s energy stay with you."
+      },
+      service: {
+        element: "Earth",
+        label: "The Builder",
+        blurb:
+          "This pattern resonates with Earth-sign vibes: grounded, dependable, and action-focused. You show love by making life work better, and you feel loved when someone carries real-world weight with you."
+      },
+      gifts: {
+        element: "Earth",
+        label: "The Curator",
+        blurb:
+          "This pattern overlaps with the more sensual, tangible side of Earth signs: you anchor feelings into physical reminders. A gift is a bookmark in the story of your relationship."
+      },
+      touch: {
+        element: "Fire",
+        label: "The Spark",
+        blurb:
+          "This pattern mirrors Fire-sign warmth: expressive, immediate, and embodied. You experience love through contact, closeness, and the spark of being physically near someone."
+      }
+    };
 
     const LOVE_META = {
       words: {
@@ -894,6 +1007,7 @@
     // STATE
     let currentIndex = 0; // 0–9 for 10 questions
     const answersState = {}; // { [questionId]: string | string[] }
+    let chosenZodiacSign = "";
 
     // DOM
     const introCard = document.getElementById("intro-card");
@@ -903,6 +1017,7 @@
     const startBtn = document.getElementById("start-btn");
     const aboutToggleBtn = document.getElementById("about-toggle-btn");
     const aboutBody = document.getElementById("about-body");
+    const zodiacSelect = document.getElementById("zodiac-select");
 
     const questionTextEl = document.getElementById("question-text");
     const helperTextEl = document.getElementById("helper-text");
@@ -921,6 +1036,7 @@
     const primaryDescriptionEl = document.getElementById("primary-description");
     const matchDescriptionEl = document.getElementById("match-description");
     const scoreListEl = document.getElementById("score-list");
+    const zodiacArchetypeTextEl = document.getElementById("zodiac-archetype-text");
     const shareBtn = document.getElementById("share-btn");
     const shareStatusEl = document.getElementById("share-status");
     const restartBtn = document.getElementById("restart-btn");
@@ -1076,6 +1192,36 @@
       return { primary, secondary, ordered: entries };
     }
 
+    function buildZodiacArchetypeText(primaryKey) {
+      const arche = LOVE_ARCHETYPE[primaryKey];
+      const element = arche.element;
+      const label = arche.label;
+      const signs = ELEMENT_SIGNS[element] || [];
+      const signList = signs.join(", ");
+
+      const chosen = chosenZodiacSign && ZODIAC_ELEMENT[chosenZodiacSign]
+        ? {
+            sign: chosenZodiacSign,
+            element: ZODIAC_ELEMENT[chosenZodiacSign]
+          }
+        : null;
+
+      let text =
+        `Your love language sits in a lane we could call “${label}”, which leans into ${element}-type energy. ` +
+        `${arche.blurb} ` +
+        `If you’re into astrology, this is similar to how people describe ${element} signs (${signList}). `;
+
+      if (chosen && chosen.element === element) {
+        text += `Since you chose ${chosen.sign}, that lines up: your sign and your love language are speaking the same dialect.`;
+      } else if (chosen && chosen.element !== element) {
+        text += `You chose ${chosen.sign}, which is a ${chosen.element} sign — so your chart and your love style might complement each other instead of matching exactly.`;
+      } else {
+        text += `Even if you don’t know your sign or don’t fully believe in this stuff, it can still feel like a “born this way” setting for how you love.`;
+      }
+
+      return text;
+    }
+
     function showResults() {
       const scores = computeScores();
       const { primary, secondary, ordered } = getPrimaryAndSecondary(scores);
@@ -1093,6 +1239,9 @@
       } else {
         primaryDescriptionEl.textContent = pMeta.long;
       }
+
+      // Zodiac-flavored archetype
+      zodiacArchetypeTextEl.textContent = buildZodiacArchetypeText(primary.key);
 
       const matchNames = pMeta.matches.join(" or ");
       matchDescriptionEl.textContent =
@@ -1132,8 +1281,12 @@
       if (sMeta) {
         text += `Secondary: ${sMeta.name}\n`;
       }
+      if (chosenZodiacSign) {
+        const elem = ZODIAC_ELEMENT[chosenZodiacSign];
+        text += `Sign (optional): ${chosenZodiacSign} (${elem || "unknown element"})\n`;
+      }
       text += `Summary: ${pMeta.summary}\n`;
-      text += "This is from a 10-question Love Language Path quiz.";
+      text += "This is from a 10-question Love Language Path quiz that blends love languages with Zodiac-style archetypes.";
       return text;
     }
 
@@ -1149,7 +1302,6 @@
           });
           shareStatusEl.textContent = "Shared successfully (if you completed the share sheet).";
         } catch (err) {
-          // User may have cancelled; we don’t treat this as an error.
           shareStatusEl.textContent = "Share cancelled or not completed.";
         }
       } else if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -1185,6 +1337,7 @@
     }
 
     function startQuiz() {
+      chosenZodiacSign = zodiacSelect.value || "";
       introCard.classList.add("hidden");
       resultCard.classList.add("hidden");
       quizCard.classList.remove("hidden");
